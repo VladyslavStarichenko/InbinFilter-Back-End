@@ -2,15 +2,11 @@ package nure.com.InbinFilter.security.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nure.com.InbinFilter.dto.AuthenticationDto;
-import nure.com.InbinFilter.exeption.CustomException;
-import nure.com.InbinFilter.models.user.Role;
-import nure.com.InbinFilter.models.user.Status;
 import nure.com.InbinFilter.models.user.User;
 import nure.com.InbinFilter.repository.role.RoleRepository;
 import nure.com.InbinFilter.repository.user.UserRepository;
 import nure.com.InbinFilter.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,25 +41,25 @@ public class UserServiceSCRT {
     }
 
 
-    public Map<Object,Object> createUserResident(User user) {
-        if (!userRepository.existsByUserName(user.getUserName())) {
-            Role roleUser = roleRepository.findByName("RESIDENT");
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRole(roleUser);
-            user.setStatus(Status.ACTIVE);
-            User registeredUser = userRepository.save(user);
-            log.info("IN register - user: {} successfully registered", registeredUser);
-
-            String token =  jwtTokenProvider.createToken(user.getUserName(), new ArrayList<>(Collections.singletonList(user.getRole())));
-            String userNameSignedIn =  user.getUserName();
-            Map<Object, Object> response = new HashMap<>();
-            response.put("username", userNameSignedIn);
-            response.put("token", token);
-            return response;
-        } else {
-            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+//    public Map<Object,Object> createUserResident(User user) {
+//        if (!userRepository.existsByUserName(user.getUserName())) {
+//            Role roleUser = roleRepository.findByName("RESIDENT");
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//            user.setRole(roleUser);
+//            user.setStatus(Status.ACTIVE);
+//            User registeredUser = userRepository.save(user);
+//            log.info("IN register - user: {} successfully registered", registeredUser);
+//
+//            String token =  jwtTokenProvider.createToken(user.getUserName(), new ArrayList<>(Collections.singletonList(user.getRole())));
+//            String userNameSignedIn =  user.getUserName();
+//            Map<Object, Object> response = new HashMap<>();
+//            response.put("username", userNameSignedIn);
+//            response.put("token", token);
+//            return response;
+//        } else {
+//            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+//        }
+//    }
 
     public Map<Object, Object> signIn(AuthenticationDto requestDto) throws AuthenticationException {
         try {
