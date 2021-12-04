@@ -1,0 +1,431 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uid.uuid_generate_v4()" dbms="postgresql"/>
+
+
+    <changeSet id="1.0.0" author="goldsilver12">
+        <createTable tableName="users">
+            <column name="id" type="${uuid_type}">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="user_name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="role_id" type="BIGINT" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(25)" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.1" author="goldsilver12">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.2" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="users"
+                                 constraintName="fk_user_roles"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="roles"/>
+    </changeSet>
+
+    <changeSet id="1.0.3" author="goldsilver12">
+        <createTable tableName="complex">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.4" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="complex"
+                                 constraintName="fk_user_complex"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+
+    <changeSet id="1.0.5" author="goldsilver12">
+        <createTable tableName="flat">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="address" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="complex_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.6" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="complex_id"
+                                 baseTableName="flat"
+                                 constraintName="fk_flat_complex"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="complex"/>
+    </changeSet>
+
+    <changeSet id="1.0.7" author="goldsilver12">
+        <createTable tableName="residents">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="bill" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="flat_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.8" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="flat_id"
+                                 baseTableName="residents"
+                                 constraintName="fk_flat_resident"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="flat"/>
+    </changeSet>
+
+    <changeSet id="1.0.9" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="residents"
+                                 constraintName="fk_user_residents"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.10" author="goldsilver12">
+        <createTable tableName="bin">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="capacity" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="fill" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_full" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="litter_type" type="VARCHAR(35)" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="flat_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.11" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="flat_id"
+                                 baseTableName="bin"
+                                 constraintName="fk_bin_flat"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="flat"/>
+    </changeSet>
+
+    <changeSet id="1.0.12" author="goldsilver12">
+        <createTable tableName="cleaners">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${uuid_type}">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.13" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="cleaners"
+                                 constraintName="fk_user_cleaner"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.15" author="goldsilver12">
+        <createTable tableName="cleaner_complex">
+            <column name="cleaner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="complex_id" type="BIGINT" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.16" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="cleaner_id"
+                                 baseTableName="cleaner_complex"
+                                 constraintName="fk_cleaner_complex_cleaner"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cleaners"/>
+    </changeSet>
+
+    <changeSet id="1.0.17" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="complex_id"
+                                 baseTableName="cleaner_complex"
+                                 constraintName="fk_cleaner_complex_complex"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="complex"/>
+    </changeSet>
+
+    <changeSet id="1.0.18" author="goldsilver12">
+        <createTable tableName="litter">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="amount" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="litter_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.19" author="goldsilver12">
+        <createTable tableName="waste">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="amount" type="INT">
+            </column>
+
+            <column name="bin_id" type="BIGINT" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="litter_id" type="BIGINT" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="resident_id" type="BIGINT" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.20" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="bin_id"
+                                 baseTableName="waste"
+                                 constraintName="fk_waste_bin"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="bin"/>
+    </changeSet>
+
+    <changeSet id="1.0.21" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="litter_id"
+                                 baseTableName="waste"
+                                 constraintName="fk_waster_litter"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="litter"/>
+    </changeSet>
+
+    <changeSet id="1.0.22" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="resident_id"
+                                 baseTableName="waste"
+                                 constraintName="fk_waste_resident"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="residents"/>
+    </changeSet>
+
+    <changeSet id="1.0.23" author="goldsilver12">
+        <createTable tableName="notification">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="message" type="VARCHAR(255)" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${uuid_type}" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="1.0.24" author="goldsilver12">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="notification"
+                                 constraintName="fk_user_notification"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.25" author="goldsilver12">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_RESIDENT"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_CLEANER"/>
+        </insert>
+    </changeSet>
+
+
+    <changeSet id="1.0.26" author="goldsilver12">
+        <insert tableName="users">
+            <column name="id" value="076a697c-2d1f-11ec-8d3d-0242ac130003"/>
+            <column name="user_name" value="goldsilverTest1"/>
+            <column name="password" value="$2a$10$V003J.CCI6Al4EXozE/EfeHGIysls/i0E62IuJ7fIuEvmpHxAXcLK"/>
+            <column name="created" value="2021-09-29 22:54:27.291000"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" value="076a697c-2d1f-11ec-8d3d-0242ac130004"/>
+            <column name="user_name" value="goldsilverTest2"/>
+            <column name="password" value="$2a$10$V003J.CCI6Al4EXozE/EfeHGIysls/i0E62IuJ7fIuEvmpHxAXcLK"/>
+            <column name="created" value="2021-09-29 22:54:27.291000"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="role_id" value="2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
