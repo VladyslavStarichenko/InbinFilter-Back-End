@@ -20,7 +20,9 @@ import java.util.Map;
 @RestController
 @Api(value = "Authentication operations (login, sign up)")
 @RequestMapping(value = "/auth/")
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3000", "http://someserver:8000"},
+        methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.POST},
+        allowCredentials = "true", maxAge = 3600, allowedHeaders = "*")
 public class AuthenticationController {
 
 
