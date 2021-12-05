@@ -2,13 +2,19 @@ package nure.com.InbinFilter.security.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nure.com.InbinFilter.dto.AuthenticationDto;
+import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.CustomException;
+import nure.com.InbinFilter.models.Flat;
+import nure.com.InbinFilter.models.user.Resident;
 import nure.com.InbinFilter.models.user.Role;
 import nure.com.InbinFilter.models.user.Status;
 import nure.com.InbinFilter.models.user.User;
+import nure.com.InbinFilter.repository.flat.FlatRepository;
+import nure.com.InbinFilter.repository.resident.ResidentRepository;
 import nure.com.InbinFilter.repository.role.RoleRepository;
 import nure.com.InbinFilter.repository.user.UserRepository;
 import nure.com.InbinFilter.security.jwt.JwtTokenProvider;
+import nure.com.InbinFilter.service.resident.ResidentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,17 +40,54 @@ public class UserServiceSCRT {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ResidentRepository residentRepository;
+    private final FlatRepository flatRepository;
+    private final ResidentServiceImpl residentServiceImpl;
 
 
     @Autowired
-    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository, ResidentServiceImpl residentServiceImpl) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-
+        this.residentRepository = residentRepository;
+        this.flatRepository = flatRepository;
+        this.residentServiceImpl = residentServiceImpl;
     }
+
+    public ResidentGetDto signUpResident(User user, Long flatId) {
+        Pattern passWordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$");
+        Matcher matcherPassword = passWordPattern.matcher(user.getPassword());
+        if (userRepository.existsByUserName(user.getUserName())) {
+            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        } else if (!matcherPassword.matches()) {
+            throw new CustomException("Password should contain at least one capital letter, one lowercase letter, special character," +
+                    "length should be more or equals 8", HttpStatus.BAD_REQUEST);
+        } else {
+            Role roleUser = roleRepository.findByName("ROLE_RESIDENT");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(roleUser);
+            user.setStatus(Status.ACTIVE);
+            User registeredUser = userRepository.save(user);
+            log.info("IN register - user: {} successfully registered", registeredUser);
+
+            Resident resident = new Resident();
+            resident.setBill(0);
+            resident.setNotifications(new ArrayList<>());
+            Optional<Flat> flatById = flatRepository.findById(flatId);
+            flatById.ifPresent(resident::setFlat);
+            resident.setWastes(new ArrayList<>());
+            resident.setUser(registeredUser);
+            Resident residentToSave = residentRepository.save(resident);
+            return residentServiceImpl.fromResident(residentToSave);
+
+        }
+    }
+
+
+
 
 
     public Map<Object, Object> signUpAdmin(User user) {

@@ -13,4 +13,7 @@ public interface ComplexRepository extends PagingAndSortingRepository<HouseCompl
 
     @Query(value = " FROM HouseComplex c WHERE c.admin = ?1")
     Optional<HouseComplex> getHouseComplexByAdmin(User user);
+
+
+    Boolean existsHouseComplexByName(String name);
 }

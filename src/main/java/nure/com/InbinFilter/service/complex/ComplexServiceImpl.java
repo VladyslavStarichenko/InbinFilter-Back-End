@@ -8,6 +8,7 @@ import nure.com.InbinFilter.models.user.Cleaner;
 import nure.com.InbinFilter.models.user.User;
 import nure.com.InbinFilter.repository.complex.ComplexRepository;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,22 +22,34 @@ public class ComplexServiceImpl implements ComplexService {
     @Autowired
     private final ComplexRepository complexRepository;
     private final UserServiceSCRT userServiceSCRT;
+    private final ModelMapper modelMapper;
 
-    public ComplexServiceImpl(ComplexRepository complexRepository, UserServiceSCRT userServiceSCRT) {
-        this.complexRepository = complexRepository;
+
+    public ComplexServiceImpl(ComplexRepository complexRepository, ComplexRepository complexRepository1, UserServiceSCRT userServiceSCRT, ModelMapper modelMapper){
+        this.complexRepository = complexRepository1;
         this.userServiceSCRT = userServiceSCRT;
+        this.modelMapper = modelMapper;
+
     }
 
     @Override
     public HouseComplex getComplex() {
         User user = userServiceSCRT.getCurrentLoggedInUser();
+        HouseComplex complex = getComplex(user);
+        if (complex != null) {
+            return complex;
+        }
+        log.warn("IN getComplex");
+        throw new CustomException("There is no house complex for logged in user", HttpStatus.NOT_FOUND);
+    }
+
+    public HouseComplex getComplex(User user) {
         if (complexRepository.getHouseComplexByAdmin(user).isPresent() &&
                 user.getRole().getName().equals("ROLE_ADMIN")) {
             log.info("IN getComplex: was found complex with id {}", user.getHouseComplex().getId());
             return complexRepository.getHouseComplexByAdmin(user).get();
         }
-        log.warn("IN getComplex");
-        throw new CustomException("There is no house complex for logged in user", HttpStatus.NOT_FOUND);
+        return null;
     }
 
     public void addFlat(Flat flat, HouseComplex houseComplex) {
@@ -78,4 +91,8 @@ public class ComplexServiceImpl implements ComplexService {
         houseComplex.getCleaners().remove(cleaner);
         log.info("IN removeCleaner: cleaner with id {} was successfully removed from complex with id {}", cleaner.getId(), houseComplex.getId());
     }
+
+
+
+
 }

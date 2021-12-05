@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Role role;
 
     @OneToOne(mappedBy = "user")

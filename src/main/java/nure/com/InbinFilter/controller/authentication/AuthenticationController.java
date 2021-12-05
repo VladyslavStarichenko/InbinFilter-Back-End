@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import nure.com.InbinFilter.dto.AuthenticationDto;
 import nure.com.InbinFilter.dto.AuthorizationDto;
+import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.EmptyDataException;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,16 @@ public class AuthenticationController {
         }
         Map<Object, Object> response = userService.signUpAdmin(user.toUser());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("registerResident/id={id}")
+    @ApiOperation(value = "Register Resident")
+    public ResponseEntity<ResidentGetDto> registerResident(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
+    @ApiParam(value = "Flat id") @PathVariable Long id) {
+        if (user == null) {
+            throw new EmptyDataException("Invalid or empty input");
+        }
+        ResidentGetDto residentGetDto = userService.signUpResident(user.toUser(), id);
+        return new ResponseEntity<>(residentGetDto, HttpStatus.CREATED);
     }
 }

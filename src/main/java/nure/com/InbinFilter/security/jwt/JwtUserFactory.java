@@ -6,9 +6,8 @@ import nure.com.InbinFilter.models.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,7 @@ public final class JwtUserFactory {
                 user.getId(),
                 user.getUserName(),
                 user.getPassword(),
-                mapToGrantedAuthorities(Arrays.asList(user.getRole())),
+                mapToGrantedAuthorities(new ArrayList<>(Collections.singletonList(user.getRole()))),
                 user.getStatus().equals(Status.ACTIVE),
                 user.getUpdatedAt()
         );
