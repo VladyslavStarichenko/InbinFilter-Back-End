@@ -23,9 +23,12 @@ public class HouseComplex extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User admin;
+
 
     @OneToMany(mappedBy = "complex", fetch = FetchType.LAZY)
     private List<Flat> flats;
@@ -34,7 +37,8 @@ public class HouseComplex extends BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cleaner_complex",
             joinColumns = {@JoinColumn(name = "cleaner_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "complex_id",referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "complex_id", referencedColumnName = "id")})
     private List<Cleaner> cleaners;
+
 
 }

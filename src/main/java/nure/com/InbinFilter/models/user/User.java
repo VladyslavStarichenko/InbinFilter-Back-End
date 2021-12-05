@@ -41,4 +41,5 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "admin")
     private HouseComplex houseComplex;
 
+
 }

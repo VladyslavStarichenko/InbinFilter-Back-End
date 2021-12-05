@@ -82,6 +82,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
+            <column name="name" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="created" type="TIMESTAMP" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
