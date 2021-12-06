@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,11 +96,14 @@ public class WasteController {
         WasteGenericDto other = wasteServiceImpl.getWastesByLitterType(residentWastes, LitterType.OTHERWASTE);
         WasteGenericDto paper = wasteServiceImpl.getWastesByLitterType(residentWastes, LitterType.PAPER);
         WasteGenericDto glass = wasteServiceImpl.getWastesByLitterType(residentWastes, LitterType.GLASS);
+
         WasteStatisticsDto statistics = new WasteStatisticsDto();
-        statistics.getWastes().add(paper);
-        statistics.getWastes().add(plastics);
-        statistics.getWastes().add(glass);
-        statistics.getWastes().add(other);
+        List<WasteGenericDto> wastes = new ArrayList<>();
+        wastes.add(paper);
+        wastes.add(plastics);
+        wastes.add(glass);
+        wastes.add(other);
+        statistics.setWastes(wastes);
         statistics.setResidentId(residentWastes.get(0).getResident().getId());
         return new ResponseEntity<>(statistics, HttpStatus.OK);
     }
@@ -115,10 +119,12 @@ public class WasteController {
         WasteGenericDto paper = wasteServiceImpl.getWastesByLitterType(residentWastes, LitterType.PAPER);
         WasteGenericDto glass = wasteServiceImpl.getWastesByLitterType(residentWastes, LitterType.GLASS);
         WasteStatisticsDto statistics = new WasteStatisticsDto();
-        statistics.getWastes().add(paper);
-        statistics.getWastes().add(plastics);
-        statistics.getWastes().add(glass);
-        statistics.getWastes().add(other);
+        List<WasteGenericDto> wastes = new ArrayList<>();
+        wastes.add(paper);
+        wastes.add(plastics);
+        wastes.add(glass);
+        wastes.add(other);
+        statistics.setWastes(wastes);
         statistics.setResidentId(residentWastes.get(0).getResident().getId());
         return new ResponseEntity<>(statistics, HttpStatus.OK);
     }

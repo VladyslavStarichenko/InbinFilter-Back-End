@@ -82,7 +82,8 @@ public class BinServiceImpl implements BinService {
 
     }
     public void wasteBin(Bin bin, Integer amount){
-        bin.setFill(bin.getCapacity()-amount);
+        bin.setFill(bin.getFill()+amount);
+        bin.setCapacity(bin.getCapacity()- bin.getFill());
         binRepository.save(bin);
     }
 

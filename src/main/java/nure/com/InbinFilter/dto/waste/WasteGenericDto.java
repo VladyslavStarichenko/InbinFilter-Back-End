@@ -6,6 +6,6 @@ import nure.com.InbinFilter.models.LitterType;
 public class WasteGenericDto {
 
     private LitterType litterType;
-    private Integer amountPercent;
+    private Double amountPercent;
 
 }

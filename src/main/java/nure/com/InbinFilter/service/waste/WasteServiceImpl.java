@@ -119,8 +119,10 @@ public class WasteServiceImpl implements WasteService {
         Flat flat = new Flat();
         if(flatDb.isPresent()){
             flat = flatDb.get();
+            return wasteRepository.findWasteByResident_Flat(flat);
         }
-        return wasteRepository.findWasteByResident_Flat(flat);
+        throw new CustomException("There is no flat by specified address", HttpStatus.BAD_REQUEST);
+
     }
 
     public WasteGetDto fromWaste(Waste waste){
@@ -143,9 +145,28 @@ public class WasteServiceImpl implements WasteService {
         List<Waste> collectByLitterType = wastes.stream()
                 .filter(w -> w.getLitter().getLitterType() == litterType)
                 .collect(Collectors.toList());
+        if(collectByLitterType.size() == 0){
+            WasteGenericDto wasteGenericDto = new WasteGenericDto();
+            wasteGenericDto.setLitterType(litterType);
+            wasteGenericDto.setAmountPercent(0.0);
+            return wasteGenericDto;
+
+        }
+
+        List<Integer> sum = collectByLitterType.stream().map(Waste::getAmount)
+                .collect(Collectors.toList());
+
+        List<Integer> totalSum = wastes.stream().map(Waste::getAmount)
+                .collect(Collectors.toList());
+
+        Integer resultAmount = sum.stream().reduce(0, Integer::sum);
+
+        Integer resultTotalAmount = totalSum.stream().reduce(0, Integer::sum);
+
         WasteGenericDto wasteGenericDto = new WasteGenericDto();
         wasteGenericDto.setLitterType(litterType);
-        wasteGenericDto.setAmountPercent(wastes.size() * 100 / collectByLitterType.size());
+        double percent = ((double) resultAmount*100)/ ((double)resultTotalAmount);
+        wasteGenericDto.setAmountPercent(Math.round(percent*100.0)/100.0);
         return wasteGenericDto;
 
     }
