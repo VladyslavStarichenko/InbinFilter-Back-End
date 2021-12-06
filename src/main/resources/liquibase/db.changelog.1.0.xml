@@ -431,15 +431,6 @@
             <column name="role_id" value="2"/>
         </insert>
 
-        <insert tableName="users">
-            <column name="id" value="076a697c-2d1f-11ec-8d3d-0242ac130004"/>
-            <column name="user_name" value="goldsilverTest2"/>
-            <column name="password" value="$2a$10$V003J.CCI6Al4EXozE/EfeHGIysls/i0E62IuJ7fIuEvmpHxAXcLK"/>
-            <column name="created" value="2021-09-29 22:54:27.291000"/>
-            <column name="status" value="ACTIVE"/>
-            <column name="role_id" value="2"/>
-        </insert>
-
 
 
     </changeSet>
