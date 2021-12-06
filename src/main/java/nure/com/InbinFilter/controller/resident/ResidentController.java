@@ -42,13 +42,13 @@ public class ResidentController {
     @GetMapping("id/{id}")
     public ResponseEntity<ResidentGetDto> getResidentById(@ApiParam(value = "Resident id to search") @PathVariable Long id) {
 
-        return new ResponseEntity<>((residentServiceImpl.getResidentById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(ResidentServiceImpl.fromResident(residentServiceImpl.getResidentById(id)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get resident account")
     @GetMapping("myAccount/")
     public ResponseEntity<ResidentGetDto> getResidentByName() {
-        return new ResponseEntity<>((residentServiceImpl.getResidentAccount(userServiceSCRT.getCurrentLoggedInUser().getUserName())), HttpStatus.OK);
+        return new ResponseEntity<>((ResidentServiceImpl.fromResident(residentServiceImpl.getResidentAccount())), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all flat residents")
@@ -57,12 +57,12 @@ public class ResidentController {
     public ResponseEntity<ResidentResponsePage> getAllResidents(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
             @ApiParam(value = "Page size") @PathVariable int pageSize,
-            @ApiParam(value = "Sort information by parameter") @PathVariable(required = false) Long id
+            @ApiParam(value = "Flat id") @PathVariable(required = false) Long id
     ) {
         Page<Resident> allResidents = residentServiceImpl.getAllResidents(pageNumber, pageSize, id);
         Page<ResidentGetDto> page = new PageImpl<>(allResidents
                 .stream()
-                .map(residentServiceImpl::fromResident)
+                .map(ResidentServiceImpl::fromResident)
                 .collect(Collectors.toList()));
         List<ResidentGetDto> resultList = page.toList();
         ResidentResponsePage response = residentServiceImpl.fromPage(page, resultList);

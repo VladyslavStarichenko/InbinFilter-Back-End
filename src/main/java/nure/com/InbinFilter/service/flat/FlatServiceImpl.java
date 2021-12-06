@@ -94,6 +94,13 @@ public class FlatServiceImpl implements FlatService {
         throw new CustomException("There is no flat with specified id", HttpStatus.NOT_FOUND);
     }
 
+    public Flat getFlatByAddress(String address){
+        if(flatRepository.findByAddress(address).isPresent()){
+            return flatRepository.findByAddress(address).get();
+        }
+        throw new CustomException("There is no flat with specified address", HttpStatus.NOT_FOUND);
+    }
+
     public FlatGetDto fromFlat(Flat flat) {
         FlatGetDto flatGetDto = modelMapper.map(flat, FlatGetDto.class);
         flatGetDto.setFlatId(flat.getId());

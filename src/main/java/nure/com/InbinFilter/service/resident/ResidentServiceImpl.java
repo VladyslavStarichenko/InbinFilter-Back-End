@@ -5,8 +5,10 @@ import nure.com.InbinFilter.dto.resident.ResidentResponsePage;
 import nure.com.InbinFilter.exeption.CustomException;
 import nure.com.InbinFilter.models.Flat;
 import nure.com.InbinFilter.models.user.Resident;
+import nure.com.InbinFilter.models.user.User;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
 import nure.com.InbinFilter.repository.resident.ResidentRepository;
+import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,13 +26,15 @@ public class ResidentServiceImpl implements ResidentService{
     private final ResidentRepository residentRepository;
     private final ModelMapper modelMapper;
     private final FlatRepository flatRepository;
+    private final UserServiceSCRT userServiceSCRT;
 
 
     @Autowired
-    public ResidentServiceImpl(ResidentRepository residentRepository, ModelMapper modelMapper, FlatRepository flatRepository) {
+    public ResidentServiceImpl(ResidentRepository residentRepository, ModelMapper modelMapper, FlatRepository flatRepository, UserServiceSCRT userServiceSCRT) {
         this.residentRepository = residentRepository;
         this.modelMapper = modelMapper;
         this.flatRepository = flatRepository;
+        this.userServiceSCRT = userServiceSCRT;
     }
 
 
@@ -45,25 +49,31 @@ public class ResidentServiceImpl implements ResidentService{
 
     }
 
+    public void updateResidentBill(Integer bill, Resident resident){
+        resident.setBill(bill);
+        residentRepository.save(resident);
+    }
+
     @Override
-    public ResidentGetDto getResidentById(Long id) {
+    public Resident getResidentById(Long id) {
         Optional<Resident> residentById = residentRepository.findById(id);
         if(residentById.isPresent()){
-            return fromResident(residentById.get());
+            return residentById.get();
         }
         throw new CustomException("There is no resident with specified id", HttpStatus.NOT_FOUND);
     }
 
 
-    public ResidentGetDto getResidentAccount(String userName) {
-        Optional<Resident> getResidentAccount = residentRepository.findResidentByUser_UserName(userName);
+    public Resident getResidentAccount() {
+        User user = userServiceSCRT.getCurrentLoggedInUser();
+        Optional<Resident> getResidentAccount = residentRepository.findResidentByUser(user.getId());
         if(getResidentAccount.isPresent()){
-            return fromResident(getResidentAccount.get());
+            return getResidentAccount.get();
         }
         throw new CustomException("There is no user with specified Name",HttpStatus.NOT_FOUND);
     }
 
-    public ResidentGetDto fromResident(Resident resident){
+    public static ResidentGetDto fromResident(Resident resident){
         ResidentGetDto residentGetDto = new ResidentGetDto();
         residentGetDto.setName(resident.getUser().getUserName());
         residentGetDto.setAddress(resident.getFlat().getAddress());

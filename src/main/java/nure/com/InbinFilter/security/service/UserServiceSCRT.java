@@ -42,11 +42,10 @@ public class UserServiceSCRT {
     private final JwtTokenProvider jwtTokenProvider;
     private final ResidentRepository residentRepository;
     private final FlatRepository flatRepository;
-    private final ResidentServiceImpl residentServiceImpl;
 
 
     @Autowired
-    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository, ResidentServiceImpl residentServiceImpl) {
+    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,7 +53,6 @@ public class UserServiceSCRT {
         this.jwtTokenProvider = jwtTokenProvider;
         this.residentRepository = residentRepository;
         this.flatRepository = flatRepository;
-        this.residentServiceImpl = residentServiceImpl;
     }
 
     public ResidentGetDto signUpResident(User user, Long flatId) {
@@ -81,7 +79,7 @@ public class UserServiceSCRT {
             resident.setWastes(new ArrayList<>());
             resident.setUser(registeredUser);
             Resident residentToSave = residentRepository.save(resident);
-            return residentServiceImpl.fromResident(residentToSave);
+            return ResidentServiceImpl.fromResident(residentToSave);
 
         }
     }

@@ -15,6 +15,8 @@ public interface FlatRepository extends PagingAndSortingRepository<Flat, Long> {
     @Override
     Optional<Flat> findById(Long id);
 
+    Optional<Flat> findByAddress(String address);
+
     @Override
     Page<Flat> findAll(Pageable pageable);
 }

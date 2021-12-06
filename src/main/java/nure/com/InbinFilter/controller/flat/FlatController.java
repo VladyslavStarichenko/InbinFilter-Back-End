@@ -45,6 +45,12 @@ public class FlatController {
         return new ResponseEntity<>(flatServiceImpl.fromFlat(flatServiceImpl.getFlatById(id)), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get flat by address")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("address/{address}")
+    public ResponseEntity<FlatGetDto> getProgramById(@ApiParam(value = "Program address to search") @PathVariable String address) {
+        return new ResponseEntity<>(flatServiceImpl.fromFlat(flatServiceImpl.getFlatByAddress(address)), HttpStatus.OK);
+    }
 
     @ApiOperation(value = "Get all flats")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

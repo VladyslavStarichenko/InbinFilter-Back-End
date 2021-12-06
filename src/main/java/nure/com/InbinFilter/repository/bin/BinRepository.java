@@ -13,6 +13,5 @@ public interface BinRepository extends PagingAndSortingRepository<Bin, Long> {
 
     List<Bin> findAllByFlat_Id(Long id);
 
-
     List<Bin> getAllByLitterTypeAndFlat(LitterType litterType, Flat flat);
 }

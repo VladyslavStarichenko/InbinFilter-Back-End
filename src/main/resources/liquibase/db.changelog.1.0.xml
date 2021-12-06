@@ -301,7 +301,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="amount" type="INT">
+            <column name="price" type="INT">
                 <constraints nullable="false"/>
             </column>
 
@@ -429,6 +429,45 @@
             <column name="created" value="2021-09-29 22:54:27.291000"/>
             <column name="status" value="ACTIVE"/>
             <column name="role_id" value="2"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" value="076a697c-2d1f-11ec-8d3d-0242ac130004"/>
+            <column name="user_name" value="goldsilverTest2"/>
+            <column name="password" value="$2a$10$V003J.CCI6Al4EXozE/EfeHGIysls/i0E62IuJ7fIuEvmpHxAXcLK"/>
+            <column name="created" value="2021-09-29 22:54:27.291000"/>
+            <column name="status" value="ACTIVE"/>
+            <column name="role_id" value="2"/>
+        </insert>
+
+
+
+    </changeSet>
+
+    <changeSet id="1.0.27" author="goldsilver12">
+
+        <insert tableName="litter">
+            <column name="id" value="1"/>
+            <column name="price" value="20"/>
+            <column name="litter_type" value="OTHERWASTE"/>
+        </insert>
+
+        <insert tableName="litter">
+            <column name="id" value="2"/>
+            <column name="price" value="22"/>
+            <column name="litter_type" value="GLASS"/>
+        </insert>
+
+        <insert tableName="litter">
+            <column name="id" value="3"/>
+            <column name="price" value="23"/>
+            <column name="litter_type" value="PAPER"/>
+        </insert>
+
+        <insert tableName="litter">
+            <column name="id" value="4"/>
+            <column name="price" value="24"/>
+            <column name="litter_type" value="PLASTIC"/>
         </insert>
     </changeSet>
 

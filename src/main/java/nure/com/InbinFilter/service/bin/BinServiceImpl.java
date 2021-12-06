@@ -81,6 +81,18 @@ public class BinServiceImpl implements BinService {
        return binRepository.save(newBin);
 
     }
+    public void wasteBin(Bin bin, Integer amount){
+        bin.setFill(bin.getCapacity()-amount);
+        binRepository.save(bin);
+    }
+
+    public void makeReport(Bin bin){
+        if(bin.isFull()||bin.getFill() > bin.getCapacity()/2){
+            bin.setFull(true);
+            binRepository.save(bin);
+        }
+        throw new CustomException("Bin is not Full to make a report", HttpStatus.BAD_REQUEST);
+    }
 
     private Boolean checkLitterType(LitterType litterType, Flat flat) {
         return binRepository.getAllByLitterTypeAndFlat(litterType, flat).size() > 0;
