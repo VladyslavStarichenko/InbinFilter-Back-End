@@ -129,6 +129,7 @@ public class UserServiceSCRT {
             Map<Object, Object> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
+            response.put("role", user.get().getRole().getName());
             return response;
         } catch (AuthenticationException exception) {
             throw new BadCredentialsException("Invalid username or password");
