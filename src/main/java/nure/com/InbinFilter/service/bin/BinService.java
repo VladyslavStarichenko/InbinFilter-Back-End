@@ -11,7 +11,7 @@ public interface BinService {
 
     void deleteBinById(Long id);
 
-    Bin updateBin(Long id, Integer capacity, LitterType litterType, Long flatId);
+    Bin updateBin(Long id, Double capacity, LitterType litterType, Long flatId);
 
     List<Bin> getAllBins(Long flatId);
 

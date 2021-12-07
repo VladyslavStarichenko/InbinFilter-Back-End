@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import java.util.List;
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,9 +22,9 @@ public class Bin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer fill;
+    private Double fill;
 
-    private Integer capacity;
+    private Double capacity;
 
     @Enumerated(EnumType.STRING)
     private LitterType litterType;

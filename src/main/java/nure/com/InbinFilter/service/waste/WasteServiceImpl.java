@@ -57,7 +57,7 @@ public class WasteServiceImpl implements WasteService {
     }
 
     @Override
-    public Waste commitWaste(LitterType litterType, Integer amount) {
+    public Waste commitWaste(LitterType litterType, Double amount) {
         Resident resident = residentServiceImpl.getResidentAccount();
         Waste waste = new Waste();
         Bin bin = new Bin();
@@ -85,7 +85,7 @@ public class WasteServiceImpl implements WasteService {
         return wasteRepository.save(waste);
     }
 
-    private Boolean ifIsFullBin(Bin bin, Integer amount){
+    private Boolean ifIsFullBin(Bin bin, Double amount){
         return bin.isFull() && bin.getCapacity() - amount < 0;
     }
 
@@ -153,15 +153,15 @@ public class WasteServiceImpl implements WasteService {
 
         }
 
-        List<Integer> sum = collectByLitterType.stream().map(Waste::getAmount)
+        List<Double> sum = collectByLitterType.stream().map(Waste::getAmount)
                 .collect(Collectors.toList());
 
-        List<Integer> totalSum = wastes.stream().map(Waste::getAmount)
+        List<Double> totalSum = wastes.stream().map(Waste::getAmount)
                 .collect(Collectors.toList());
 
-        Integer resultAmount = sum.stream().reduce(0, Integer::sum);
+        Double resultAmount = sum.stream().reduce(Math.round(0*100.0)/100.0, Double::sum);
 
-        Integer resultTotalAmount = totalSum.stream().reduce(0, Integer::sum);
+        Double resultTotalAmount = totalSum.stream().reduce(Math.round(0*100.0)/100.0, Double::sum);
 
         WasteGenericDto wasteGenericDto = new WasteGenericDto();
         wasteGenericDto.setLitterType(litterType);
@@ -170,4 +170,14 @@ public class WasteServiceImpl implements WasteService {
         return wasteGenericDto;
 
     }
+
+    public Double getTotalBill(List<WasteGetDto> wastes){
+        List<Double> bills = wastes.stream()
+                .map(WasteGetDto::getPriceToPay)
+                .collect(Collectors.toList());
+
+        return bills.stream().reduce((double)0, Double::sum);
+    }
+
+
 }

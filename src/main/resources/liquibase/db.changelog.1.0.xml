@@ -379,7 +379,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="user_id" type="${uuid_type}" >
+            <column name="resident_id" type="BIGINT" >
                 <constraints nullable="false"/>
             </column>
 
@@ -388,13 +388,13 @@
     </changeSet>
 
     <changeSet id="1.0.24" author="goldsilver12">
-        <addForeignKeyConstraint baseColumnNames="user_id"
+        <addForeignKeyConstraint baseColumnNames="resident_id"
                                  baseTableName="notification"
-                                 constraintName="fk_user_notification"
+                                 constraintName="fk_resident_notification"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="users"/>
+                                 referencedTableName="residents"/>
     </changeSet>
 
     <changeSet id="1.0.25" author="goldsilver12">

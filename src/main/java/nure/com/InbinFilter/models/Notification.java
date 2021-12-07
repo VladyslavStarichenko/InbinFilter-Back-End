@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nure.com.InbinFilter.models.user.Resident;
-import nure.com.InbinFilter.models.user.User;
 
 import javax.persistence.*;
 
@@ -22,7 +21,7 @@ public class Notification {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "resident_id", nullable = false)
     private Resident resident;
 
     private String message;

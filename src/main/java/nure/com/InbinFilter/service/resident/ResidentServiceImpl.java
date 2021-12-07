@@ -12,6 +12,7 @@ import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class ResidentServiceImpl implements ResidentService{
+public class ResidentServiceImpl implements ResidentService {
 
     private final ResidentRepository residentRepository;
     private final ModelMapper modelMapper;
@@ -39,25 +41,46 @@ public class ResidentServiceImpl implements ResidentService{
 
 
     @Override
-    public Page<Resident> getAllResidents(int pageNumber, int sizeOfPage, Long id) {
-        Pageable pageable = PageRequest.of(pageNumber,sizeOfPage);
+    public Page<Resident> getAllResidentsByFlat(int pageNumber, int sizeOfPage, Long id) {
+        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
         Optional<Flat> flat = flatRepository.findById(id);
-        if(flat.isPresent()){
-            return residentRepository.findAllByFlat(pageable,flat.get());
-        }
-        else throw new CustomException("There is no flat in the complex with specified id", HttpStatus.NOT_FOUND);
+        if (flat.isPresent()) {
+            return residentRepository.findAllByFlat(pageable, flat.get());
+        } else throw new CustomException("There is no flat in the complex with specified id", HttpStatus.NOT_FOUND);
 
     }
 
-    public void updateResidentBill(Integer bill, Resident resident){
-        resident.setBill(bill);
+    public Page<Resident> getAllDebtorsByFlat(int pageNumber, int sizeOfPage, Long id) {
+        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
+        Optional<Flat> flat = flatRepository.findById(id);
+        if (flat.isPresent()) {
+            Page<Resident> allByFlat = residentRepository.findAllByFlat(pageable, flat.get());
+            return new PageImpl<>(allByFlat.getContent().stream()
+                    .filter(resident -> resident.getBill() > 0)
+                    .collect(Collectors.toList()));
+        } else throw new CustomException("There is no flat in the complex with specified id", HttpStatus.NOT_FOUND);
+
+    }
+
+    public List<Resident> getAllDebtorsByFlatList(Long flatId) {
+        Optional<Flat> flat = flatRepository.findById(flatId);
+        if (flat.isPresent()) {
+            List<Resident> residents = residentRepository.findAllByFlat_Id(flat.get().getId());
+            return residents.stream()
+                    .filter(resident -> resident.getBill() > 0)
+                    .collect(Collectors.toList());
+        } else throw new CustomException("There is no flat in the complex with specified id", HttpStatus.NOT_FOUND);
+    }
+
+    public void updateResidentBill(Double bill, Resident resident) {
+        resident.setBill(resident.getBill() + bill);
         residentRepository.save(resident);
     }
 
     @Override
     public Resident getResidentById(Long id) {
         Optional<Resident> residentById = residentRepository.findById(id);
-        if(residentById.isPresent()){
+        if (residentById.isPresent()) {
             return residentById.get();
         }
         throw new CustomException("There is no resident with specified id", HttpStatus.NOT_FOUND);
@@ -67,17 +90,18 @@ public class ResidentServiceImpl implements ResidentService{
     public Resident getResidentAccount() {
         User user = userServiceSCRT.getCurrentLoggedInUser();
         Optional<Resident> getResidentAccount = residentRepository.findResidentByUser(user.getId());
-        if(getResidentAccount.isPresent()){
+        if (getResidentAccount.isPresent()) {
             return getResidentAccount.get();
         }
-        throw new CustomException("There is no user with specified Name",HttpStatus.NOT_FOUND);
+        throw new CustomException("There is no user with specified Name", HttpStatus.NOT_FOUND);
     }
 
-    public static ResidentGetDto fromResident(Resident resident){
+    public static ResidentGetDto fromResident(Resident resident) {
         ResidentGetDto residentGetDto = new ResidentGetDto();
         residentGetDto.setName(resident.getUser().getUserName());
         residentGetDto.setAddress(resident.getFlat().getAddress());
         residentGetDto.setId(resident.getId());
+        residentGetDto.setBill(resident.getBill());
         return residentGetDto;
 
     }
@@ -87,8 +111,6 @@ public class ResidentServiceImpl implements ResidentService{
         response.setResidentGetDtoList(residentGetDtos);
         return response;
     }
-
-
 
 
 }

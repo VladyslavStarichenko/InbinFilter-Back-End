@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nure.com.InbinFilter.models.Bin;
-import nure.com.InbinFilter.models.Litter;
 import nure.com.InbinFilter.models.user.Resident;
-import nure.com.InbinFilter.models.user.User;
 
 import javax.persistence.*;
 
@@ -36,7 +33,7 @@ public class Waste {
     @JoinColumn(name = "litter_id", referencedColumnName = "id")
     private Litter litter;
 
-    private Integer amount;
+    private Double amount;
 
 
 }

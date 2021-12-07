@@ -7,6 +7,5 @@ public class ResidentGetDto {
     private Long id;
     private String name;
     private String address;
-
-
+    private Double bill;
 }

@@ -8,8 +8,8 @@ import nure.com.InbinFilter.models.Flat;
 import nure.com.InbinFilter.models.Notification;
 import nure.com.InbinFilter.models.Waste;
 
-import java.util.List;
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public class Resident {
     private User user;
 
     @Column(name = "bill")
-    private Integer bill;
+    private Double bill;
 
     @ManyToOne
     @JoinColumn(name="flat_id", nullable=false)

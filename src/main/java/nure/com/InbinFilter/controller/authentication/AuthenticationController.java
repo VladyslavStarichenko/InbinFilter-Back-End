@@ -11,6 +11,7 @@ import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("registerResident/id={id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "Register Resident")
     public ResponseEntity<ResidentGetDto> registerResident(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
     @ApiParam(value = "Flat id") @PathVariable Long id) {

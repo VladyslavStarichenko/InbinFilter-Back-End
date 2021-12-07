@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 
 public interface ResidentService {
 
-    Page<Resident> getAllResidents(int pageNumber, int sizeOfPage, Long id);
+    Page<Resident> getAllResidentsByFlat(int pageNumber, int sizeOfPage, Long id);
 
     Resident getResidentById(Long id);
 

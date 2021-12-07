@@ -11,7 +11,7 @@ public interface WasteService {
 
     Page<Waste> getAllWastesByResident(Integer pageNumber, Integer sizeOfPage, Long residentId);
 
-    Waste commitWaste(LitterType litterType, Integer amount);
+    Waste commitWaste(LitterType litterType, Double amount);
 
     Page<Waste> getAllWastesPageByFlat(Integer pageNumber, Integer sizeOfPage, String flatAddress);
 

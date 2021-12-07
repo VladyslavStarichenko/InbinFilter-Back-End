@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface ResidentRepository extends PagingAndSortingRepository<Resident,
 
     @Query(value = "SELECT * FROM residents r WHERE r.user_id = ?", nativeQuery = true)
     Optional<Resident> findResidentByUser(UUID userId);
+
+    List<Resident> findAllByFlat_Id(Long flatId);
 }

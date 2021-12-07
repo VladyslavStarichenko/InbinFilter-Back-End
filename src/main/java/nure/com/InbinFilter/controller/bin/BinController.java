@@ -12,6 +12,7 @@ import nure.com.InbinFilter.repository.bin.BinRepository;
 import nure.com.InbinFilter.service.bin.BinServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Create bin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("create/{flatId}")
     public ResponseEntity<BinGetDto> createBin(
             @ApiParam(value = "Complex object to create") @RequestBody BinCreateDto binCreateDto,
@@ -45,6 +47,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Get bin by id")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLEANER') ")
     @GetMapping("id/{id}")
     public ResponseEntity<BinGetDto> getResidentById(@ApiParam(value = "Bin id to search") @PathVariable Long id) {
         Optional<Bin> getBinById = binRepository.findById(id);
@@ -68,11 +71,11 @@ public class BinController {
     }
 
     @ApiOperation(value = "Update Bin")
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("update/{binId}/capacity{capacity}/{litterType}/flatId{flatId}")
     ResponseEntity<BinGetDto> updateBin(
             @ApiParam(value = "Bin id to update") @PathVariable Long binId,
-            @ApiParam(value = "Capacity") @PathVariable Integer capacity,
+            @ApiParam(value = "Capacity") @PathVariable Double capacity,
             @ApiParam(value = "New LitterType") @PathVariable LitterType litterType,
             @ApiParam(value = "flatId") @PathVariable Long flatId
     ) {
@@ -80,6 +83,7 @@ public class BinController {
         return new ResponseEntity<>(binServiceImpl.fromBin(bin), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "Delete bin by id")
     @DeleteMapping("/{binId}")
     ResponseEntity<String> deleteBin(

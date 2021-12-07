@@ -16,10 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,6 +45,7 @@ public class WasteController {
     }
 
     @ApiOperation(value = "Get My Wastes")
+    @PreAuthorize("hasRole('ROLE_RESIDENT')")
     @GetMapping("myWastes/pageNumber={pageNumber}/pageSize={pageSize}")
     public ResponseEntity<WastePageResponse> getMyWasteStatistics(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
@@ -62,9 +66,26 @@ public class WasteController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get My Bill")
+    @PreAuthorize("hasRole('ROLE_RESIDENT')")
+    @GetMapping("myBill")
+    public ResponseEntity<Map<Object,Object>> getMyBill() {
+        User currentLoggedInUser = userServiceSCRT.getCurrentLoggedInUser();
+        List<Waste> allWastesByResident = wasteServiceImpl.getAllWastesByResident(currentLoggedInUser);
+
+        List<WasteGetDto> resultWastes = allWastesByResident.stream()
+                .map(wasteServiceImpl::fromWaste)
+                .collect(Collectors.toList());
+        Double totalBill = wasteServiceImpl.getTotalBill(resultWastes);
+        Map<Object, Object> response = new HashMap<>();
+        response.put("Total bill:",totalBill);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get All Wastes By Resident")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("userWastes/pageNumber={pageNumber}/pageSize={pageSize}/{residentId}")
-    public ResponseEntity<WastePageResponse> getCurrentUserWasteStatistics(
+    public ResponseEntity<WastePageResponse> getUserWaste(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
             @ApiParam(value = "Page size") @PathVariable int pageSize,
             @ApiParam(value = "User id") @PathVariable Long residentId
@@ -85,7 +106,10 @@ public class WasteController {
     }
 
 
-    @ApiOperation(value = "Get All Wastes By Resident ")
+
+
+    @ApiOperation(value = "Get All Wastes Statistics By Resident ")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/litterType/statistics/resident/{residentId}")
     public ResponseEntity<WasteStatisticsDto> getUserWasteStatistics(
             @ApiParam(value = "Resident id") @PathVariable Long residentId
@@ -109,6 +133,7 @@ public class WasteController {
     }
 
     @ApiOperation(value = "Get All Wastes By Flat ")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/litterType/statistics/flat/{flatAddress}")
     public ResponseEntity<WasteStatisticsDto> getFlatWasteStatistics(
             @ApiParam(value = "Flat address") @PathVariable String flatAddress
@@ -130,6 +155,7 @@ public class WasteController {
     }
 
     @ApiOperation(value = "Commit the waste")
+    @PreAuthorize("hasRole('ROLE_RESIDENT')")
     @PostMapping
     public ResponseEntity<String> commitWaste(@ApiParam(value = "Waste object to create") @RequestBody WasteCreateDto wasteCreateDto) {
         wasteServiceImpl.commitWaste(wasteCreateDto.getLitterType(),wasteCreateDto.getAmount());

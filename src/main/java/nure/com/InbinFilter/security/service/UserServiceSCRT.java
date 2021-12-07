@@ -72,7 +72,7 @@ public class UserServiceSCRT {
             log.info("IN register - user: {} successfully registered", registeredUser);
 
             Resident resident = new Resident();
-            resident.setBill(0);
+            resident.setBill(Math.round(0*100.0)/100.0);
             resident.setNotifications(new ArrayList<>());
             Optional<Flat> flatById = flatRepository.findById(flatId);
             flatById.ifPresent(resident::setFlat);

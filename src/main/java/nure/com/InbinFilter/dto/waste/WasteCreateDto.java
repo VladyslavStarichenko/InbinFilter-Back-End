@@ -6,5 +6,5 @@ import nure.com.InbinFilter.models.LitterType;
 @Data
 public class WasteCreateDto {
     LitterType litterType;
-    Integer amount;
+    Double amount;
 }

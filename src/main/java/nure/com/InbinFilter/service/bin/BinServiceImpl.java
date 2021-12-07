@@ -36,7 +36,7 @@ public class BinServiceImpl implements BinService {
             Bin bin = new Bin();
             bin.setCapacity(binCreateDto.getCapacity());
             bin.setFlat(flatServiceImpl.getFlatById(flatId));
-            bin.setFill(0);
+            bin.setFill((double)0);
             bin.setLitterType(binCreateDto.getLitterType());
             bin.setFull(false);
             bin.setWastes(new ArrayList<>());
@@ -56,7 +56,7 @@ public class BinServiceImpl implements BinService {
     }
 
     @Override
-    public Bin updateBin(Long id, Integer capacity, LitterType litterType, Long flatId) {
+    public Bin updateBin(Long id, Double capacity, LitterType litterType, Long flatId) {
         Flat flat = flatServiceImpl.getFlatById(flatId);
         Optional<Bin> binToUpdate = binRepository.findById(id);
         Bin bin;
@@ -81,7 +81,7 @@ public class BinServiceImpl implements BinService {
        return binRepository.save(newBin);
 
     }
-    public void wasteBin(Bin bin, Integer amount){
+    public void wasteBin(Bin bin, Double amount){
         bin.setFill(bin.getFill()+amount);
         bin.setCapacity(bin.getCapacity()- bin.getFill());
         binRepository.save(bin);

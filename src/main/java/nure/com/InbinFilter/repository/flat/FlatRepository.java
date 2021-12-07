@@ -19,4 +19,6 @@ public interface FlatRepository extends PagingAndSortingRepository<Flat, Long> {
 
     @Override
     Page<Flat> findAll(Pageable pageable);
+
+
 }

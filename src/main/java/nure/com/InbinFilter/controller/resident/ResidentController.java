@@ -59,11 +59,8 @@ public class ResidentController {
             @ApiParam(value = "Page size") @PathVariable int pageSize,
             @ApiParam(value = "Flat id") @PathVariable(required = false) Long id
     ) {
-        Page<Resident> allResidents = residentServiceImpl.getAllResidents(pageNumber, pageSize, id);
-        Page<ResidentGetDto> page = new PageImpl<>(allResidents
-                .stream()
-                .map(ResidentServiceImpl::fromResident)
-                .collect(Collectors.toList()));
+        Page<Resident> allResidents = residentServiceImpl.getAllResidentsByFlat(pageNumber, pageSize, id);
+        Page<ResidentGetDto> page = getFromPageToListResidentGetDtos(allResidents);
         List<ResidentGetDto> resultList = page.toList();
         ResidentResponsePage response = residentServiceImpl.fromPage(page, resultList);
         response.setPageNumber(pageNumber);
@@ -71,5 +68,31 @@ public class ResidentController {
         response.setTotalElements((int) allResidents.getTotalElements());
         response.setTotalPages(allResidents.getTotalPages());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get all flat debtors")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("debtors/pageNumber={pageNumber}/pageSize={pageSize}/flatId={id}")
+    public ResponseEntity<ResidentResponsePage> getAllFlatDebtors(
+            @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
+            @ApiParam(value = "Page size") @PathVariable int pageSize,
+            @ApiParam(value = "Flat id") @PathVariable(required = false) Long id
+    ) {
+        Page<Resident> allResidents = residentServiceImpl.getAllDebtorsByFlat(pageNumber, pageSize, id);
+        Page<ResidentGetDto> page = getFromPageToListResidentGetDtos(allResidents);
+        List<ResidentGetDto> resultList = page.toList();
+        ResidentResponsePage response = residentServiceImpl.fromPage(page, resultList);
+        response.setPageNumber(pageNumber);
+        response.setPageSize(pageSize);
+        response.setTotalElements((int) allResidents.getTotalElements());
+        response.setTotalPages(allResidents.getTotalPages());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private Page<ResidentGetDto> getFromPageToListResidentGetDtos(Page<Resident> allResidents) {
+        return new PageImpl<>(allResidents
+                .stream()
+                .map(ResidentServiceImpl::fromResident)
+                .collect(Collectors.toList()));
     }
 }
