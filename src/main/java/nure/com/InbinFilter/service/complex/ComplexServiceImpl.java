@@ -2,7 +2,6 @@ package nure.com.InbinFilter.service.complex;
 
 import lombok.extern.slf4j.Slf4j;
 import nure.com.InbinFilter.exeption.CustomException;
-import nure.com.InbinFilter.models.Flat;
 import nure.com.InbinFilter.models.HouseComplex;
 import nure.com.InbinFilter.models.user.Cleaner;
 import nure.com.InbinFilter.models.user.User;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -52,25 +52,14 @@ public class ComplexServiceImpl implements ComplexService {
         return null;
     }
 
-    public void addFlat(Flat flat, HouseComplex houseComplex) {
-        List<Flat> houseComplexFlats = houseComplex.getFlats();
-        if (houseComplexFlats.contains(flat)) {
-            log.warn("IN addFlat: fail to add flat with id{} to collection", flat.getId());
-            throw new CustomException("This flat is already added", HttpStatus.IM_USED);
+    public HouseComplex getComplexById(Long id){
+        Optional<HouseComplex> complexById = complexRepository.findById(id);
+        if(complexById.isPresent()){
+            HouseComplex houseComplex = complexById.get();
         }
-        houseComplexFlats.add(flat);
-        log.info("IN addFlat: flat with id {} was successfully added to complex with id {}", flat.getId(), houseComplex.getId());
+        throw new CustomException("There is no complex with specified Id", HttpStatus.NOT_FOUND);
     }
 
-    public void removeFlat(Flat flat, HouseComplex houseComplex) {
-        List<Flat> houseComplexFlats = houseComplex.getFlats();
-        if (houseComplexFlats.contains(flat)) {
-            log.warn("IN removeFlat: fail to remove flat with id{} from collection", flat.getId());
-            throw new CustomException("This flat is not belong to complex", HttpStatus.NOT_FOUND);
-        }
-        houseComplex.getFlats().remove(flat);
-        log.info("IN removeFlat: flat with id {} was successfully removed from complex with id {}", flat.getId(), houseComplex.getId());
-    }
 
     public void addCleaner(Cleaner cleaner, HouseComplex houseComplex) {
         List<Cleaner> houseComplexCleaners = houseComplex.getCleaners();

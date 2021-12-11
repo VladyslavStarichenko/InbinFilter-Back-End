@@ -2,18 +2,20 @@ package nure.com.InbinFilter.security.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nure.com.InbinFilter.dto.AuthenticationDto;
+import nure.com.InbinFilter.dto.cleaner.CleanerGetDto;
 import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.CustomException;
 import nure.com.InbinFilter.models.Flat;
-import nure.com.InbinFilter.models.user.Resident;
-import nure.com.InbinFilter.models.user.Role;
-import nure.com.InbinFilter.models.user.Status;
-import nure.com.InbinFilter.models.user.User;
+import nure.com.InbinFilter.models.HouseComplex;
+import nure.com.InbinFilter.models.user.*;
+import nure.com.InbinFilter.repository.cleaner.CleanerRepository;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
 import nure.com.InbinFilter.repository.resident.ResidentRepository;
 import nure.com.InbinFilter.repository.role.RoleRepository;
 import nure.com.InbinFilter.repository.user.UserRepository;
 import nure.com.InbinFilter.security.jwt.JwtTokenProvider;
+import nure.com.InbinFilter.service.cleaner.CleanerServiceImpl;
+import nure.com.InbinFilter.service.complex.ComplexServiceImpl;
 import nure.com.InbinFilter.service.resident.ResidentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,10 +44,12 @@ public class UserServiceSCRT {
     private final JwtTokenProvider jwtTokenProvider;
     private final ResidentRepository residentRepository;
     private final FlatRepository flatRepository;
+    private final CleanerRepository cleanerRepository;
+    private final ComplexServiceImpl complexServiceImpl;
 
 
     @Autowired
-    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository) {
+    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository, CleanerRepository cleanerRepository, ComplexServiceImpl complexServiceImpl) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -53,6 +57,8 @@ public class UserServiceSCRT {
         this.jwtTokenProvider = jwtTokenProvider;
         this.residentRepository = residentRepository;
         this.flatRepository = flatRepository;
+        this.cleanerRepository = cleanerRepository;
+        this.complexServiceImpl = complexServiceImpl;
     }
 
     public ResidentGetDto signUpResident(User user, Long flatId) {
@@ -81,6 +87,33 @@ public class UserServiceSCRT {
             Resident residentToSave = residentRepository.save(resident);
             return ResidentServiceImpl.fromResident(residentToSave);
 
+        }
+    }
+
+
+    public CleanerGetDto signUpCleaner(User user, Long complexId) {
+        Pattern passWordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$");
+        Matcher matcherPassword = passWordPattern.matcher(user.getPassword());
+        if (userRepository.existsByUserName(user.getUserName())) {
+            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+        } else if (!matcherPassword.matches()) {
+            throw new CustomException("Password should contain at least one capital letter, one lowercase letter, special character," +
+                    "length should be more or equals 8", HttpStatus.BAD_REQUEST);
+        } else {
+            Role roleUser = roleRepository.findByName("ROLE_CLEANER");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(roleUser);
+            user.setStatus(Status.ACTIVE);
+            User registeredUser = userRepository.save(user);
+            log.info("IN register - user: {} successfully registered", registeredUser);
+
+            Cleaner cleaner = new Cleaner();
+            cleaner.setUser(user);
+            List<HouseComplex> complexes = new ArrayList<>();
+            complexes.add(complexServiceImpl.getComplex());
+            cleaner.setComplexes(complexes);
+            Cleaner cleanerToSave = cleanerRepository.save(cleaner);
+            return CleanerServiceImpl.fromCleaner(cleanerToSave);
         }
     }
 

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import nure.com.InbinFilter.dto.AuthenticationDto;
 import nure.com.InbinFilter.dto.AuthorizationDto;
+import nure.com.InbinFilter.dto.cleaner.CleanerGetDto;
 import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.EmptyDataException;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
@@ -60,11 +61,24 @@ public class AuthenticationController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "Register Resident")
     public ResponseEntity<ResidentGetDto> registerResident(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
-    @ApiParam(value = "Flat id") @PathVariable Long id) {
+                                                           @ApiParam(value = "Flat id") @PathVariable Long id) {
         if (user == null) {
             throw new EmptyDataException("Invalid or empty input");
         }
         ResidentGetDto residentGetDto = userService.signUpResident(user.toUser(), id);
         return new ResponseEntity<>(residentGetDto, HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("registerCleaner/{complexId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ApiOperation(value = "Register Resident")
+    public ResponseEntity<CleanerGetDto> registerCleaner(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
+                                                          @ApiParam(value = "ComplexId") @PathVariable Long complexId) {
+        if (user == null) {
+            throw new EmptyDataException("Invalid or empty input");
+        }
+        CleanerGetDto cleanerGetDto = userService.signUpCleaner(user.toUser(),complexId);
+        return new ResponseEntity<>(cleanerGetDto, HttpStatus.CREATED);
     }
 }

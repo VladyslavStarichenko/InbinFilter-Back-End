@@ -1,6 +1,7 @@
 package nure.com.InbinFilter.repository.flat;
 
 import nure.com.InbinFilter.models.Flat;
+import nure.com.InbinFilter.models.HouseComplex;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -19,6 +20,8 @@ public interface FlatRepository extends PagingAndSortingRepository<Flat, Long> {
 
     @Override
     Page<Flat> findAll(Pageable pageable);
+
+    Page<Flat> getAllByComplex(Pageable pageable,HouseComplex houseComplex);
 
 
 }

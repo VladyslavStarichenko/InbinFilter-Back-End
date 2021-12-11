@@ -10,6 +10,7 @@ import nure.com.InbinFilter.models.Flat;
 import nure.com.InbinFilter.models.HouseComplex;
 import nure.com.InbinFilter.models.user.Status;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
+import nure.com.InbinFilter.service.cleaner.CleanerServiceImpl;
 import nure.com.InbinFilter.service.complex.ComplexServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class FlatServiceImpl implements FlatService {
     private final ComplexServiceImpl complexService;
 
 
+
     @Autowired
     public FlatServiceImpl(FlatRepository flatRepository, ModelMapper modelMapper,  ComplexServiceImpl complexService) {
         this.flatRepository = flatRepository;
@@ -55,6 +57,12 @@ public class FlatServiceImpl implements FlatService {
         flatToSave.setBins(new ArrayList<>());
         flatToSave.setResidents(new ArrayList<>());
         return flatRepository.save(flatToSave);
+    }
+
+    Page<Flat> getFlatsByComplex(Long id, Integer pageNumber, Integer sizeOfPage){
+        Pageable pageable = PageRequest.of(pageNumber,sizeOfPage);
+        HouseComplex houseComplex = complexService.getComplexById(id);
+        return flatRepository.getAllByComplex(pageable, houseComplex);
     }
 
     @Override
@@ -127,7 +135,9 @@ public class FlatServiceImpl implements FlatService {
         houseComplexGetDto.setFlats(houseComplex.getFlats().stream()
                 .map(this::fromFlat)
                 .collect(Collectors.toList()));
-        houseComplex.setCleaners(houseComplex.getCleaners());
+        houseComplexGetDto.setCleaners(houseComplex.getCleaners().stream()
+        .map(CleanerServiceImpl::fromCleaner)
+        .collect(Collectors.toList()));
         return houseComplexGetDto;
     }
 

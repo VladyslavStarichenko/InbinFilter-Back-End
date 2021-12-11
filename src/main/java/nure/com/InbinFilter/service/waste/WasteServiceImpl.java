@@ -7,7 +7,7 @@ import nure.com.InbinFilter.exeption.CustomException;
 import nure.com.InbinFilter.models.*;
 import nure.com.InbinFilter.models.user.Resident;
 import nure.com.InbinFilter.models.user.User;
-import nure.com.InbinFilter.repository.LitterRepository;
+import nure.com.InbinFilter.repository.litter.LitterRepository;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
 import nure.com.InbinFilter.repository.waste.WasteRepository;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;

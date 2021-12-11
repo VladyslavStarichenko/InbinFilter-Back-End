@@ -1,4 +1,4 @@
-package nure.com.InbinFilter.repository;
+package nure.com.InbinFilter.repository.litter;
 
 import nure.com.InbinFilter.models.Litter;
 import org.springframework.data.jpa.repository.Query;
