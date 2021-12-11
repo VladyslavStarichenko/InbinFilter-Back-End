@@ -8,6 +8,7 @@ import nure.com.InbinFilter.dto.complex.ComplexCreateDto;
 import nure.com.InbinFilter.dto.complex.HouseComplexGetDto;
 import nure.com.InbinFilter.exeption.CustomException;
 import nure.com.InbinFilter.models.HouseComplex;
+import nure.com.InbinFilter.models.user.User;
 import nure.com.InbinFilter.repository.complex.ComplexRepository;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import nure.com.InbinFilter.service.complex.ComplexServiceImpl;
@@ -45,7 +46,8 @@ public class HouseComplexController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<HouseComplexGetDto> getComplex() {
-        HouseComplex complex = complexServiceImpl.getComplex();
+        User user = userServiceSCRT.getCurrentLoggedInUser();
+        HouseComplex complex = complexServiceImpl.getComplex(user);
         HouseComplexGetDto houseComplexGetDto = flatService.fromHouseComplex(complex);
         return new ResponseEntity<>(houseComplexGetDto, HttpStatus.OK);
     }

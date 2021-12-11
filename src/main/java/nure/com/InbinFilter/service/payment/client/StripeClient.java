@@ -4,7 +4,6 @@ import com.stripe.Stripe;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,12 +11,11 @@ import java.util.Map;
 
 @Component
 public class StripeClient {
-    @Value("${stripe.api.key}")
-    private String apiKey;
+
 
     @Autowired
     StripeClient() {
-        Stripe.apiKey = apiKey;
+        Stripe.apiKey = "sk_test_51K470nA5ndul63ktyBYadvRoCFKtAUeNtbcZNQ3LWtGFgErJPNjT2kMiZcWaDzcEsW1JlQEpItJ3KOymj8rGSS4o00t1EZrS5d";
     }
     public Customer createCustomer(String token, String email) throws Exception {
         Map<String, Object> customerParams = new HashMap<String, Object>();

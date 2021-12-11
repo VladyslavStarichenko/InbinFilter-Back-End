@@ -10,6 +10,7 @@ import nure.com.InbinFilter.models.Flat;
 import nure.com.InbinFilter.models.HouseComplex;
 import nure.com.InbinFilter.models.user.Status;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
+import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import nure.com.InbinFilter.service.cleaner.CleanerServiceImpl;
 import nure.com.InbinFilter.service.complex.ComplexServiceImpl;
 import org.modelmapper.ModelMapper;
@@ -33,21 +34,23 @@ public class FlatServiceImpl implements FlatService {
     private final FlatRepository flatRepository;
     private final ModelMapper modelMapper;
     private final ComplexServiceImpl complexService;
+    private final UserServiceSCRT userServiceSCRT;
 
 
 
     @Autowired
-    public FlatServiceImpl(FlatRepository flatRepository, ModelMapper modelMapper,  ComplexServiceImpl complexService) {
+    public FlatServiceImpl(FlatRepository flatRepository, ModelMapper modelMapper, ComplexServiceImpl complexService, UserServiceSCRT userServiceSCRT) {
         this.flatRepository = flatRepository;
         this.modelMapper = modelMapper;
         this.complexService = complexService;
-
+        this.userServiceSCRT = userServiceSCRT;
     }
 
 
     @Override
     public Flat createFlat(FlatCreateDto flat) {
-        HouseComplex complex = complexService.getComplex();
+
+        HouseComplex complex = complexService.getComplex(userServiceSCRT.getCurrentLoggedInUser());
         if (flatRepository.existsFlatByAddress(flat.getAddress())) {
             throw new CustomException("Flat with same address is already exists", HttpStatus.IM_USED);
         }
