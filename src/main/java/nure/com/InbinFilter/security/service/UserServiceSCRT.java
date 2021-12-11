@@ -92,6 +92,7 @@ public class UserServiceSCRT {
 
 
     public CleanerGetDto signUpCleaner(User user, Long complexId) {
+        User userLogged = getCurrentLoggedInUser();
         Pattern passWordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$");
         Matcher matcherPassword = passWordPattern.matcher(user.getPassword());
         if (userRepository.existsByUserName(user.getUserName())) {
@@ -110,7 +111,7 @@ public class UserServiceSCRT {
             Cleaner cleaner = new Cleaner();
             cleaner.setUser(user);
             List<HouseComplex> complexes = new ArrayList<>();
-            complexes.add(complexServiceImpl.getComplex());
+            complexes.add(complexServiceImpl.getComplex(user));
             cleaner.setComplexes(complexes);
             Cleaner cleanerToSave = cleanerRepository.save(cleaner);
             return CleanerServiceImpl.fromCleaner(cleanerToSave);
