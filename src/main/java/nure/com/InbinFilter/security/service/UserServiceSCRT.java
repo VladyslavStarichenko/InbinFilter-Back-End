@@ -122,7 +122,7 @@ public class UserServiceSCRT {
 
 
 
-    public Map<Object, Object> signUpAdmin(User user) {
+    public Map<Object, Object> signUpComplexAdmin(User user) {
         Pattern passWordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$");
         Matcher matcherPassword = passWordPattern.matcher(user.getPassword());
         if (userRepository.existsByUserName(user.getUserName())) {
@@ -131,7 +131,7 @@ public class UserServiceSCRT {
             throw new CustomException("Password should contain at least one capital letter, one lowercase letter, special character," +
                     "length should be more or equals 8", HttpStatus.BAD_REQUEST);
         } else {
-            Role roleUser = roleRepository.findByName("ROLE_ADMIN");
+            Role roleUser = roleRepository.findByName("ROLE_COMPLEX_ADMIN");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole(roleUser);
             user.setStatus(Status.ACTIVE);
@@ -146,6 +146,10 @@ public class UserServiceSCRT {
         }
     }
 
+    public void blockComplexAdmin(String userName){
+
+    }
+
     public Map<Object, Object> signIn(AuthenticationDto requestDto) throws AuthenticationException {
         try {
             String username = requestDto.getUsername();
@@ -155,6 +159,9 @@ public class UserServiceSCRT {
             if (!user.isPresent()) {
                 throw new UsernameNotFoundException("User with username: " + username + "wasn't found");
             }
+//            if(user.get().getStatus() == Status.NONACTIVE){
+//                throw new CustomException("You've been blocked - conctact the Admin of service", HttpStatus.BAD_REQUEST);
+//            }
             log.info("IN signIn - user: {} successfully signedIN", userRepository.findUserByUserName(username));
             String token = jwtTokenProvider.createToken(username, new ArrayList<>(Collections.singletonList(user.get().getRole())));
 

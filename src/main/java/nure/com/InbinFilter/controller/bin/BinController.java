@@ -93,4 +93,17 @@ public class BinController {
         return new ResponseEntity<>("Bin with id : " + binId  + "was successfully deleted", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Make report")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("report/{flatId}")
+    ResponseEntity<String> updateBin(
+            @ApiParam(value = "Flat id to make bin report") @PathVariable Long flatId
+    ) {
+        List<Bin> bins = binServiceImpl.getAllBins(flatId);
+        bins
+                .forEach(binServiceImpl::makeReport);
+        return new ResponseEntity<>("Report was successfully created",HttpStatus.CREATED);
+    }
+
+
 }

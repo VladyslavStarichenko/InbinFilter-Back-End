@@ -12,7 +12,6 @@ import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -54,10 +53,8 @@ public class ResidentServiceImpl implements ResidentService {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
         Optional<Flat> flat = flatRepository.findById(id);
         if (flat.isPresent()) {
-            Page<Resident> allByFlat = residentRepository.findAllByFlat(pageable, flat.get());
-            return new PageImpl<>(allByFlat.getContent().stream()
-                    .filter(resident -> resident.getBill() > 0)
-                    .collect(Collectors.toList()));
+            return residentRepository.findAllDebtors(pageable, flat.get().getId());
+
         } else throw new CustomException("There is no flat in the complex with specified id", HttpStatus.NOT_FOUND);
 
     }

@@ -47,15 +47,6 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("signUp")
-    @ApiOperation(value = "Sign up to the system")
-    public ResponseEntity<Map<Object, Object>> signUp(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user) {
-        if (user == null) {
-            throw new EmptyDataException("Invalid or empty input");
-        }
-        Map<Object, Object> response = userService.signUpAdmin(user.toUser());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
     @PostMapping("registerResident/id={id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -8,8 +8,6 @@ import nure.com.InbinFilter.repository.notification.NotificationRepository;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,10 +25,9 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public Page<Notification> gelAllResidentNotifications(Integer pageNumber, Integer sizeOfPage) {
+    public List<Notification> gelAllResidentNotifications() {
         Resident resident = userServiceSCRT.getCurrentLoggedInUser().getResident();
-        Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
-        return notificationRepository.getAllByResident(pageable,resident);
+        return notificationRepository.getAllByResident(resident);
     }
 
     @Override

@@ -25,4 +25,7 @@ public interface ResidentRepository extends PagingAndSortingRepository<Resident,
     Optional<Resident> findResidentByUser(UUID userId);
 
     List<Resident> findAllByFlat_Id(Long flatId);
+
+    @Query(value = "SELECT * FROM residents r WHERE r.flat_id = ? AND bill > 0", nativeQuery = true)
+    Page<Resident> findAllDebtors(Pageable pageable, Long flatId);
 }
