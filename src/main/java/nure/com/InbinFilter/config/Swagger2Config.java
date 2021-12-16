@@ -34,8 +34,8 @@ public class Swagger2Config {
     }
 
     private ApiInfo apiEndPointsInfo(){
-        return new ApiInfo("Fitness Assistant",
-                "Fitness Assistant API",
+        return new ApiInfo("Inbin Filter",
+                "Inbin Filter API",
                 "1.0",
                 "Free to use",
                 new springfox.documentation.service.Contact("Vladyslav Starichenko",
