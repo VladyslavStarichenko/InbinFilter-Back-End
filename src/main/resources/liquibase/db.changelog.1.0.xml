@@ -409,6 +409,10 @@
         <insert tableName="roles">
             <column name="name" value="ROLE_CLEANER"/>
         </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_COMPLEX_ADMIN"/>
+        </insert>
     </changeSet>
 
 
