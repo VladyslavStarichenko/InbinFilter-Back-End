@@ -38,7 +38,7 @@ public class ResidentController {
     }
 
     @ApiOperation(value = "Get resident by id")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @GetMapping("id/{id}")
     public ResponseEntity<ResidentGetDto> getResidentById(@ApiParam(value = "Resident id to search") @PathVariable Long id) {
 
@@ -52,7 +52,7 @@ public class ResidentController {
     }
 
     @ApiOperation(value = "Get all flat residents")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @GetMapping("/pageNumber={pageNumber}/pageSize={pageSize}/flatId={id}")
     public ResponseEntity<ResidentResponsePage> getAllResidents(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
@@ -71,7 +71,7 @@ public class ResidentController {
     }
 
     @ApiOperation(value = "Get all flat debtors")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @GetMapping("debtors/pageNumber={pageNumber}/pageSize={pageSize}/flatId={id}")
     public ResponseEntity<ResidentResponsePage> getAllFlatDebtors(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,

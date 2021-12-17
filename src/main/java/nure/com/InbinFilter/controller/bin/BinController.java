@@ -36,7 +36,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Create bin")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PostMapping("create/{flatId}")
     public ResponseEntity<BinGetDto> createBin(
             @ApiParam(value = "Complex object to create") @RequestBody BinCreateDto binCreateDto,
@@ -47,7 +47,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Get bin by id")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX') or hasRole('ROLE_CLEANER') ")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN') or hasRole('ROLE_CLEANER') ")
     @GetMapping("id/{id}")
     public ResponseEntity<BinGetDto> getResidentById(@ApiParam(value = "Bin id to search") @PathVariable Long id) {
         Optional<Bin> getBinById = binRepository.findById(id);
@@ -71,7 +71,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Update Bin")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PutMapping("update/{binId}/capacity{capacity}/{litterType}/flatId{flatId}")
     ResponseEntity<BinGetDto> updateBin(
             @ApiParam(value = "Bin id to update") @PathVariable Long binId,
@@ -83,7 +83,7 @@ public class BinController {
         return new ResponseEntity<>(binServiceImpl.fromBin(bin), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @ApiOperation(value = "Delete bin by id")
     @DeleteMapping("/{binId}")
     ResponseEntity<String> deleteBin(
@@ -94,7 +94,7 @@ public class BinController {
     }
 
     @ApiOperation(value = "Make report")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PutMapping("report/{flatId}")
     ResponseEntity<String> updateBin(
             @ApiParam(value = "Flat id to make bin report") @PathVariable Long flatId

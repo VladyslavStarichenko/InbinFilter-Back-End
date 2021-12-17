@@ -37,7 +37,7 @@ public class NotificationController {
     }
 
     @ApiOperation(value = "Create Notifications for debtors")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PostMapping("/{flatId}")
     public ResponseEntity<String> notificateDebtors(@ApiParam(value = "Flat id") @PathVariable Long flatId) {
         List<Resident> debtors = residentServiceImpl.getAllDebtorsByFlatList(flatId);

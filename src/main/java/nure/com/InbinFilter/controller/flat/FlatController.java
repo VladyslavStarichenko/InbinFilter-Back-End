@@ -75,7 +75,7 @@ public class FlatController {
     }
 
     @ApiOperation(value = "Update flat address")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PutMapping("update/{flatId}/{newAddress}")
     ResponseEntity<FlatGetDto> updateName(
             @ApiParam(value = "Program name to update") @PathVariable Long flatId,
@@ -86,7 +86,7 @@ public class FlatController {
     }
 
     @ApiOperation(value = "Add new flat to the complex")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PostMapping
     public ResponseEntity<FlatGetDto> createFlat(@ApiParam(value = "Flat object to create") @RequestBody FlatCreateDto flatCreateDto) {
         Flat flat = flatServiceImpl.createFlat(flatCreateDto);

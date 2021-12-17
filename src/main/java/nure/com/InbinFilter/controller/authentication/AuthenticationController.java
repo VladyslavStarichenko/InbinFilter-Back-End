@@ -49,7 +49,7 @@ public class AuthenticationController {
 
 
     @PostMapping("registerResident/id={id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @ApiOperation(value = "Register Resident")
     public ResponseEntity<ResidentGetDto> registerResident(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
                                                            @ApiParam(value = "Flat id") @PathVariable Long id) {
@@ -62,7 +62,7 @@ public class AuthenticationController {
 
 
     @PostMapping("registerCleaner/{complexId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @ApiOperation(value = "Register Resident")
     public ResponseEntity<CleanerGetDto> registerCleaner(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
                                                           @ApiParam(value = "ComplexId") @PathVariable Long complexId) {
