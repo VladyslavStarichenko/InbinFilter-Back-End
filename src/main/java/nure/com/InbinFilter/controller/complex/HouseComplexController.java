@@ -43,7 +43,7 @@ public class HouseComplexController {
 
 
     @ApiOperation(value = "Get House Complex")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @GetMapping
     public ResponseEntity<HouseComplexGetDto> getComplex() {
         User user = userServiceSCRT.getCurrentLoggedInUser();
