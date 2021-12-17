@@ -56,10 +56,10 @@ public class HouseComplexController {
     @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @PostMapping
     public ResponseEntity<HouseComplexGetDto> createComplex(@ApiParam(value = "Complex object to create") @RequestBody ComplexCreateDto complexCreateDto) {
-        if(complexServiceImpl.getComplex(userServiceSCRT.getCurrentLoggedInUser()) != null){
-            throw new CustomException("You're already have house complex",HttpStatus.BAD_REQUEST);
-        }
-        else if(complexRepository.existsHouseComplexByName(complexCreateDto.getName())){
+//        if(complexServiceImpl.getComplex(userServiceSCRT.getCurrentLoggedInUser()) != null){
+//            throw new CustomException("You're already have house complex",HttpStatus.BAD_REQUEST);
+//        }
+         if(complexRepository.existsHouseComplexByName(complexCreateDto.getName())){
             throw new CustomException("House Complex with same name is already exists",HttpStatus.IM_USED);
         }
         HouseComplex houseComplexToSave = ComplexCreateDto.fromDto(complexCreateDto,userServiceSCRT.getCurrentLoggedInUser());
