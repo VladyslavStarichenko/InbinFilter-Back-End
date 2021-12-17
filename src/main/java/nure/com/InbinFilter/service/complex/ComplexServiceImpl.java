@@ -41,7 +41,7 @@ public class ComplexServiceImpl implements ComplexService {
 
     public HouseComplex getComplex(User user) {
         if (complexRepository.getHouseComplexByAdmin(user).isPresent() &&
-                user.getRole().getName().equals("ROLE_ADMIN")) {
+                user.getRole().getName().equals("ROLE_COMPLEX_ADMIN")) {
             log.info("IN getComplex: was found complex with id {}", user.getHouseComplex().getId());
             return complexRepository.getHouseComplexByAdmin(user).get();
         }
