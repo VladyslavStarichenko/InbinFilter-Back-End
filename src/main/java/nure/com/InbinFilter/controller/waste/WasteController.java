@@ -83,7 +83,7 @@ public class WasteController {
     }
 
     @ApiOperation(value = "Get All Wastes By Resident")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
     @GetMapping("userWastes/pageNumber={pageNumber}/pageSize={pageSize}/{residentId}")
     public ResponseEntity<WastePageResponse> getUserWaste(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
@@ -109,7 +109,7 @@ public class WasteController {
 
 
     @ApiOperation(value = "Get All Wastes Statistics By Resident ")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
     @GetMapping("/litterType/statistics/resident/{residentId}")
     public ResponseEntity<WasteStatisticsDto> getUserWasteStatistics(
             @ApiParam(value = "Resident id") @PathVariable Long residentId
@@ -133,7 +133,7 @@ public class WasteController {
     }
 
     @ApiOperation(value = "Get All Wastes By Flat ")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
     @GetMapping("/litterType/statistics/flat/{flatAddress}")
     public ResponseEntity<WasteStatisticsDto> getFlatWasteStatistics(
             @ApiParam(value = "Flat address") @PathVariable String flatAddress

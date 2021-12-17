@@ -53,7 +53,7 @@ public class HouseComplexController {
     }
 
     @ApiOperation(value = "Register complex")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN_COMPLEX')")
     @PostMapping
     public ResponseEntity<HouseComplexGetDto> createComplex(@ApiParam(value = "Complex object to create") @RequestBody ComplexCreateDto complexCreateDto) {
         if(complexServiceImpl.getComplex(userServiceSCRT.getCurrentLoggedInUser()) != null){
