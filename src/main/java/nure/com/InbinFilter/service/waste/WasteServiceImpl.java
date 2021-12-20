@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -103,7 +104,12 @@ public class WasteServiceImpl implements WasteService {
     @Override
     public List<Waste> getAllWastesByResident(User user) {
         Resident resident = residentServiceImpl.getResidentById(user.getResident().getId());
-        return wasteRepository.getAllByResident(resident);
+
+        List<Waste> allByResident = wasteRepository.getAllByResident(resident);
+        if(allByResident.isEmpty()){
+            return new ArrayList<>();
+        }
+        return allByResident;
     }
 
     @Override
