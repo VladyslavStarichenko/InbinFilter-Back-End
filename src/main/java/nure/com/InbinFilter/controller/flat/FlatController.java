@@ -39,21 +39,18 @@ public class FlatController {
     }
 
     @ApiOperation(value = "Get flat by id")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("id/{id}")
     public ResponseEntity<FlatGetDto> getProgramById(@ApiParam(value = "Program id to search") @PathVariable Long id) {
         return new ResponseEntity<>(flatServiceImpl.fromFlat(flatServiceImpl.getFlatById(id)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get flat by address")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("address/{address}")
     public ResponseEntity<FlatGetDto> getProgramById(@ApiParam(value = "Program address to search") @PathVariable String address) {
         return new ResponseEntity<>(flatServiceImpl.fromFlat(flatServiceImpl.getFlatByAddress(address)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all flats")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/pageNumber={pageNumber}/pageSize={pageSize}/sortBy={sortBy}")
     public ResponseEntity<FlatPageResponse> getAllPrograms(
             @ApiParam(value = "Page number to show") @PathVariable int pageNumber,
