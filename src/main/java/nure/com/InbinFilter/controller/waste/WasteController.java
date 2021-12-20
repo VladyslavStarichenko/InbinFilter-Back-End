@@ -109,7 +109,7 @@ public class WasteController {
 
 
     @ApiOperation(value = "Get All Wastes Statistics By Resident ")
-    @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
+
     @GetMapping("/litterType/statistics/resident/{residentId}")
     public ResponseEntity<WasteStatisticsDto> getUserWasteStatistics(
             @ApiParam(value = "Resident id") @PathVariable Long residentId
