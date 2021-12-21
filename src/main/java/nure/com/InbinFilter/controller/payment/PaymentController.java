@@ -44,9 +44,10 @@ public class PaymentController {
             Resident residentDb = resident.get();
 
             Charge charge = this.stripeClient.chargeNewCard(token, amount);
-
+            if(charge !=null){
                 residentDb.setBill(0.0);
-
+            }
+            residentRepository.save(residentDb);
             return charge;
         }
        throw  new CustomException("Payment was failed", HttpStatus.BAD_REQUEST);
