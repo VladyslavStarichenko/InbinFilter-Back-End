@@ -8,6 +8,7 @@ import nure.com.InbinFilter.dto.AuthorizationDto;
 import nure.com.InbinFilter.dto.cleaner.CleanerGetDto;
 import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.EmptyDataException;
+import nure.com.InbinFilter.models.user.User;
 import nure.com.InbinFilter.security.service.UserServiceSCRT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class AuthenticationController {
 
 
     private final UserServiceSCRT userService;
+
 
     @Autowired
     public AuthenticationController(UserServiceSCRT userService) {
@@ -61,15 +63,13 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("registerCleaner/{complexId}")
+    @PostMapping("registerCleaner")
     @PreAuthorize("hasRole('ROLE_COMPLEX_ADMIN')")
     @ApiOperation(value = "Register Resident")
-    public ResponseEntity<CleanerGetDto> registerCleaner(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto user,
-                                                          @ApiParam(value = "ComplexId") @PathVariable Long complexId) {
-        if (user == null) {
-            throw new EmptyDataException("Invalid or empty input");
-        }
-        CleanerGetDto cleanerGetDto = userService.signUpCleaner(user.toUser(),complexId);
+    public ResponseEntity<CleanerGetDto> registerCleaner(@ApiParam(value = "User object to sign up to the system") @RequestBody AuthorizationDto userDto) {
+
+        User user = userDto.toUser();
+        CleanerGetDto cleanerGetDto = userService.signUpCleaner(user);
         return new ResponseEntity<>(cleanerGetDto, HttpStatus.CREATED);
     }
 }

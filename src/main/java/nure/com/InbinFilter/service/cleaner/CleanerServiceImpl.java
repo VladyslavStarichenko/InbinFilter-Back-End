@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CleanerServiceImpl implements CleanerService {
@@ -68,23 +67,24 @@ public class CleanerServiceImpl implements CleanerService {
 
     @Override
     public void clean(Long id) {
-        List<Bin> bins = binService.getAllBins(id);
-        List<Bin> fullBins = bins.stream().filter(Bin::isFull)
-                .collect(Collectors.toList());
-        List<Bin> binStream = fullBins.stream().map(bin -> {
-            bin.setFull(false);
-            bin.setFill(0.0);
-            return bin;
-        })
-                .collect(Collectors.toList());
-        binStream.forEach(binRepository::save);
+        Optional<Bin> bin = binRepository.findById(id);
+
+        if(bin.isPresent()){
+
+            Bin binDb = bin.get();
+            binDb.setCapacity(binDb.getCapacity()+binDb.getFill());
+            binDb.setFull(false);
+            binDb.setFill(0.0);
+
+            binRepository.save(binDb);
+        }
 
     }
 
     public static CleanerGetDto fromCleaner(Cleaner cleaner) {
         CleanerGetDto cleanerGetDto = new CleanerGetDto();
-        cleanerGetDto.setId(cleanerGetDto.getId());
-        cleanerGetDto.setName(cleanerGetDto.getName());
+        cleanerGetDto.setId(cleaner.getId());
+        cleanerGetDto.setName(cleaner.getUser().getUserName());
         return cleanerGetDto;
     }
 

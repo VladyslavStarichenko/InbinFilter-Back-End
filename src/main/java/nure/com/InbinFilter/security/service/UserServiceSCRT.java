@@ -6,9 +6,9 @@ import nure.com.InbinFilter.dto.cleaner.CleanerGetDto;
 import nure.com.InbinFilter.dto.resident.ResidentGetDto;
 import nure.com.InbinFilter.exeption.CustomException;
 import nure.com.InbinFilter.models.Flat;
-import nure.com.InbinFilter.models.HouseComplex;
 import nure.com.InbinFilter.models.user.*;
 import nure.com.InbinFilter.repository.cleaner.CleanerRepository;
+import nure.com.InbinFilter.repository.complex.ComplexRepository;
 import nure.com.InbinFilter.repository.flat.FlatRepository;
 import nure.com.InbinFilter.repository.resident.ResidentRepository;
 import nure.com.InbinFilter.repository.role.RoleRepository;
@@ -46,10 +46,11 @@ public class UserServiceSCRT {
     private final FlatRepository flatRepository;
     private final CleanerRepository cleanerRepository;
     private final ComplexServiceImpl complexServiceImpl;
+    private final ComplexRepository complexRepository;
 
 
     @Autowired
-    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository, CleanerRepository cleanerRepository, ComplexServiceImpl complexServiceImpl) {
+    public UserServiceSCRT(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ResidentRepository residentRepository, FlatRepository flatRepository, CleanerRepository cleanerRepository, ComplexServiceImpl complexServiceImpl, ComplexRepository complexRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -59,6 +60,7 @@ public class UserServiceSCRT {
         this.flatRepository = flatRepository;
         this.cleanerRepository = cleanerRepository;
         this.complexServiceImpl = complexServiceImpl;
+        this.complexRepository = complexRepository;
     }
 
     public ResidentGetDto signUpResident(User user, Long flatId) {
@@ -91,13 +93,11 @@ public class UserServiceSCRT {
     }
 
 
-    public CleanerGetDto signUpCleaner(User user, Long complexId) {
-        User userLogged = getCurrentLoggedInUser();
+    public CleanerGetDto signUpCleaner(User user) {
+        User loggedInUser = getCurrentLoggedInUser();
         Pattern passWordPattern = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,30}$");
         Matcher matcherPassword = passWordPattern.matcher(user.getPassword());
-        if (userRepository.existsByUserName(user.getUserName())) {
-            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
-        } else if (!matcherPassword.matches()) {
+       if (!matcherPassword.matches()) {
             throw new CustomException("Password should contain at least one capital letter, one lowercase letter, special character," +
                     "length should be more or equals 8", HttpStatus.BAD_REQUEST);
         } else {
@@ -110,10 +110,15 @@ public class UserServiceSCRT {
 
             Cleaner cleaner = new Cleaner();
             cleaner.setUser(user);
-            List<HouseComplex> complexes = new ArrayList<>();
-            complexes.add(complexServiceImpl.getComplex(user));
-            cleaner.setComplexes(complexes);
+//            HouseComplex houseComplex = complexServiceImpl.getComplex(loggedInUser);
+//            List<HouseComplex>complexes = new ArrayList<>();
+//            List<Cleaner>cleaners = new ArrayList<>();
+//            cleaners.add(cleaner);
+//            houseComplex.setCleaners(cleaners);
+//            complexes.add(houseComplex);
+//            cleaner.setComplexes(complexes);
             Cleaner cleanerToSave = cleanerRepository.save(cleaner);
+//            complexRepository.save(houseComplex);
             return CleanerServiceImpl.fromCleaner(cleanerToSave);
         }
     }
